@@ -1,15 +1,16 @@
-[![Build Status](https://travis-ci.org/botswana-harvard/edc-identifier.svg?branch=develop)](https://travis-ci.org/botswana-harvard/edc-identifier)
-[![Coverage Status](https://coveralls.io/repos/botswana-harvard/edc-identifier/badge.svg)](https://coveralls.io/r/botswana-harvard/edc-identifier)
+|pypi| |travis| |coverage|
 
-# edc-identifier
+edc-identifier
+--------------
 
 Add research subject identifiers and other useful identifiers to your project
 
-## Installation
-
-	pip install git+https://github.com/botswana-harvard/edc-identifier@develop#egg=edc_identifier
+Installation
+------------
 
 Add to settings:
+
+.. code-block:: python
 
     INSTALLED_APPS = [
         ...
@@ -17,11 +18,12 @@ Add to settings:
         ...
     ]
 
-## Identifiers for research subjects
+Identifiers for research subjects
+---------------------------------
 	
-### Subject Identifiers
+Create subject identifiers.
 
-For example:
+.. code-block:: python
 
     from edc_identifier.subject_identifier import SubjectIdentifier
     
@@ -35,11 +37,14 @@ For example:
     '000-40990001-6'
     
 
-### Maternal and Infant Identifiers
+Maternal and Infant Identifiers
+-------------------------------
 
-See also, `edc_pregnancy` model mixins `DeliveryMixin`, `BirthMixin`. 
+See also, ``edc_pregnancy`` model mixins ``DeliveryMixin``, ``BirthMixin``. 
 
 For example:
+
+.. code-block:: python
 
     from edc_identifier.maternal_identifier import MaternalIdentifier
 
@@ -54,13 +59,17 @@ For example:
     
 Add infants
 
+.. code-block:: python
+
     >>> maternal_identifier.deliver(2, model='edc_example.maternallabdel')
     >>> [infant.identifier for infant in maternal_identifier.infants]
     ['000-40990001-6-25', '000-40990001-6-26']
 
-`maternal_identifier.infants` is a list of `InfantIdentifier` instances
+``maternal_identifier.infants`` is a list of ``InfantIdentifier`` instances
     
 Reload class:
+
+.. code-block:: python
     
     >>> maternal_identifier = MaternalIdentifier(identifier='000-40990001-6')
     >>> maternal_identifier.identifier
@@ -70,24 +79,30 @@ Reload class:
     
 Only allocate an identifier to one infant of twins:
 
+.. code-block:: python
+
     >>> maternal_identifier.deliver(2, model='edc_example.maternallabdel', birth_orders='2')
     >>> [infant.identifier for infant in maternal_identifier.infants]
     [None, '000-40990001-6-26']
 
 Of triplets, allocate identifiers to the 2nd and 3rd infants only:
 
+.. code-block:: python
+
     >>> maternal_identifier.deliver(3, model='edc_example.maternallabdel', birth_orders='2,3')
     >>> [infant.identifier for infant in maternal_identifier.infants]
     [None, '000-40990001-6-37', '000-40990001-6-38']
 
 
-## Research subject identifier classes can create a Registered Subject instance
+Research subject identifier classes can create a Registered Subject instance
 
-See also `edc_registration`
+See also ``edc_registration``
 
-`SubjectIdentifier` by default does not create a `RegisteredSubject` instance unless `create_registration=True`.
+``SubjectIdentifier`` by default does not create a ``RegisteredSubject`` instance unless ``create_registration=True``.
 
-By default, `MaternalIdentifier` and `InfantIdentifier` create `RegisteredSubject` instances that can be updated with full details later with the Delivery and Birth models. Continuing from above:
+By default, ``MaternalIdentifier`` and ``InfantIdentifier`` create ``RegisteredSubject`` instances that can be updated with full details later with the Delivery and Birth models. Continuing from above:
+
+.. code-block:: python
 
     maternal_identifier = MaternalIdentifier(identifier='000-40990001-6')
     maternal_identifier.deliver(1, model='edc_example.maternallabdel', create_registration=True)
@@ -108,17 +123,20 @@ By default, `MaternalIdentifier` and `InfantIdentifier` create `RegisteredSubjec
     '000-40990001-6'
 
 
-### Subject type "Caps" are enforced by the research subject identifier classes
+Subject type "Caps" are enforced by the research subject identifier classes
 
-See also `edc_protocol`
+See also ``edc_protocol``
 
-Limits on the number of identifiers that can be allocated per subject type are enforced when identifiers are created. `edc_identifier` reads the "caps" from `edc_protocol.apps.AppConfig` linking the subject type, e.g. `subject`, or `maternal` or `infant`, to the relevant cap and not allowing the number of allocated identifiers to exceed the cap.
+Limits on the number of identifiers that can be allocated per subject type are enforced when identifiers are created. ``edc_identifier`` reads the "caps" from ``edc_protocol.apps.AppConfig`` linking the subject type, e.g. ``subject``, or ``maternal`` or ``infant``, to the relevant cap and not allowing the number of allocated identifiers to exceed the cap.
 
-## Base classes for identifiers.
+(Subject type "Caps" still working? needs to be verified)
 
-### Numeric Identifiers
+Numeric Identifiers
+-------------------
 
 The numeric identifier uses a check-digit and may have a separator if specified.
+
+.. code-block:: python
 
 	from edc_identifier import NumericIdentifier
 
@@ -155,7 +173,10 @@ The numeric identifier uses a check-digit and may have a separator if specified.
 	MyIdentifier('3200-0000-3223-8')
 	
 
-### Alphanumeric Identifiers
+Alphanumeric Identifiers
+------------------------
+
+.. code-block:: python
 
 	from edc_identifier import AlphanumericIdentifier
 
@@ -170,6 +191,8 @@ The numeric identifier uses a check-digit and may have a separator if specified.
 
 Your identifier will starts with 'AAA0001' plus the checkdigit "5". Subsequent calls to next increment like this:
 
+.. code-block:: python
+
 	>>> print(next(id))
 	AAA00023
 	>>> print(next(id))
@@ -179,6 +202,8 @@ Your identifier will starts with 'AAA0001' plus the checkdigit "5". Subsequent c
 
 
 The identifier increments on the numeric sequence then the alpha:
+
+.. code-block:: python
 
 	>>> id = MyIdentifier('AAA99991)
 	>>> id
@@ -196,18 +221,23 @@ The identifier increments on the numeric sequence then the alpha:
 	MyIdentifier('AAC00010')
 	...	
 
-See `getresults-receive` for sample usage with `settings` and a `History` model.
+See ``getresults-receive`` for sample usage with ``settings`` and a ``History`` model.
 
-### Short Identifiers
+Short Identifiers
+-----------------
 
 Creates a small identifier that is almost unique, for example, across 25 Edc devices in a community. We use these as sample requisition identifiers that are transcribed manually onto a tube from the Edc screen in a household. Once the sample is received at the local lab it is allocated a laboratory-wide unique specimen identifier.
+
+.. code-block:: python
 
     from edc_identifier import ShortIdentifier
     
     >>> ShortIdentifier()
     ShortIdentifier('46ZZ2')
 
-Add a static prefix -- prefix(2) + identifier(5):
+Add a static prefix -- ``prefix(2) + identifier(5)``:
+
+.. code-block:: python
 
 	from edc_identifier import ShortIdentifier
 	
@@ -221,7 +251,9 @@ Add a static prefix -- prefix(2) + identifier(5):
 	>>> next(id)
 	'22KM84G'
 
-Add a checkdigit -- prefix(2) + identifier(5) + checkdigit(1):
+Add a checkdigit -- ``prefix(2) + identifier(5) + checkdigit(1)``:
+
+.. code-block:: python
 
 	from edc_identifier import ShortIdentifier
 	
@@ -238,6 +270,8 @@ Add a checkdigit -- prefix(2) + identifier(5) + checkdigit(1):
 
 We use this in edc-quota to get a confirmation code:
 
+.. code-block:: python
+
 	from edc_identifier import ShortIdentifier
 	
 	class ConfirmationCode(ShortIdentifier):
@@ -252,6 +286,8 @@ We use this in edc-quota to get a confirmation code:
 	3FU7D
 	
 Add more to the prefix, such as device code and community code.
+
+.. code-block:: python
 
 	from edc_identifier.short_identifier import ShortIdentifier	
 	
@@ -275,7 +311,9 @@ Add more to the prefix, such as device code and community code.
 	>>> next(id)
 	'2212Y899C'
 
-... if you prefer not to use the `IdentifierHistory` model, for example, if you are filling in a model field on save():
+... if you prefer not to use the ``IdentifierHistory`` model, for example, if you are filling in a model field on ``save()``:
+
+.. code-block:: python
 
 	from my_app.models import Requisition
 
@@ -296,9 +334,13 @@ Add more to the prefix, such as device code and community code.
 			pass
 
 			
-### Batch Identifier
+Batch Identifier
+----------------
 
 To have an identifier prefixed by the current date stamp:
+
+
+.. code-block:: python
 
 	from edc_identifier.batch_identifier import BatchIdentifier	
 
@@ -309,3 +351,13 @@ To have an identifier prefixed by the current date stamp:
 	BatchIdentifier('201508170001')
 	>>> next(id)
 	'201508170002'
+
+
+.. |pypi| image:: https://img.shields.io/pypi/v/edc-identifier.svg
+    :target: https://pypi.python.org/pypi/edc-identifier
+    
+.. |travis| image:: https://travis-ci.org/clinicedc/edc-identifier.svg?branch=develop
+    :target: https://travis-ci.org/clinicedc/edc-identifier
+    
+.. |coverage| image:: https://coveralls.io/repos/github/clinicedc/edc-identifier/badge.svg?branch=develop
+    :target: https://coveralls.io/github/clinicedc/edc-identifier?branch=develop
