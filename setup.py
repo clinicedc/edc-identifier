@@ -25,6 +25,10 @@ setup(
     long_description=README,
     zip_safe=False,
     keywords='django base classes for identifiers',
+    install_requires=[
+        'edc-base',
+        'edc-model-admin',
+        'edc-registration'],
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
