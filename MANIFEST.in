@@ -1,2 +1,6 @@
-include AUTHORS CHANGES README.rst LICENSE VERSION
-recursive-include edc_identifier/templates/*
+include AUTHORS CHANGES LICENSE VERSION
+include MANIFEST.in
+include *.rst
+include *.txt
+recursive-include edc_identifier/templates *
+recursive-include edc_identifier/static *
