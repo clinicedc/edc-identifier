@@ -38,7 +38,8 @@ installed_apps = [
 
 DEFAULT_SETTINGS = dict(
     BASE_DIR=base_dir,
-    SITE_ID=10,
+    SITE_ID=40,
+    REVIEWER_SITE_ID=1,
     ALLOWED_HOSTS=['localhost'],
     ROOT_URLCONF=f'{app_name}.urls',
     STATIC_URL='/static/',
