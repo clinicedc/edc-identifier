@@ -31,11 +31,7 @@ setup(
     long_description=README,
     zip_safe=False,
     keywords='django base classes for identifiers',
-    install_requires=[
-        'django-audit-fields',
-        'edc-model',
-        'edc-utils',
-        'edc-device'],
+    install_requires=[],
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',

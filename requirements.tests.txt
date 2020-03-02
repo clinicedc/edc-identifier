@@ -2,3 +2,9 @@ faker
 edc-test-utils
 edc-registration
 edc-randomization
+edc-reference
+edc-visit-schedule
+edc-visit-tracking
+edc-facility
+edc-lab
+edc-consent
