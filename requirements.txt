@@ -1,4 +1,0 @@
-django-audit-fields
-edc-model
-edc-utils
-edc-device
