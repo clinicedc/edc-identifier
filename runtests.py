@@ -1,16 +1,15 @@
 #!/usr/bin/env python
-import django
 import logging
 import os
 import sys
+from os.path import abspath, dirname
 
+import django
 from django.conf import settings
 from django.test.runner import DiscoverRunner
 from edc_test_utils import DefaultTestSettings
-from os.path import abspath, dirname
 
-
-app_name = 'edc_identifier'
+app_name = "edc_identifier"
 base_dir = dirname(abspath(__file__))
 
 DEFAULT_SETTINGS = DefaultTestSettings(
@@ -27,8 +26,8 @@ DEFAULT_SETTINGS = DefaultTestSettings(
         "django.contrib.staticfiles",
         "django.contrib.sites",
         "django_crypto_fields.apps.AppConfig",
-        'edc_randomization.apps.AppConfig',
-        'edc_sites.apps.AppConfig',
+        "edc_randomization.apps.AppConfig",
+        "edc_sites.apps.AppConfig",
         "edc_protocol.apps.AppConfig",
         "edc_registration.apps.AppConfig",
         "edc_identifier.apps.EdcDeviceAppConfig",
@@ -42,8 +41,7 @@ def main():
     if not settings.configured:
         settings.configure(**DEFAULT_SETTINGS)
     django.setup()
-    failures = DiscoverRunner(failfast=True).run_tests(
-        [f'{app_name}.tests'])
+    failures = DiscoverRunner(failfast=True).run_tests([f"{app_name}.tests"])
     sys.exit(failures)
 
 

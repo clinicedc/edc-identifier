@@ -1,4 +1,4 @@
-|pypi| |travis| |coverage|
+|pypi| |actions| |coverage|
 
 edc-identifier
 --------------
@@ -20,13 +20,13 @@ Add to settings:
 
 Identifiers for research subjects
 ---------------------------------
-	
+
 Create subject identifiers.
 
 .. code-block:: python
 
     from edc_identifier.subject_identifier import SubjectIdentifier
-    
+
     subject_identifier = SubjectIdentifier(
         subject_type_name='subject',
         model='edc_example.enrollment',
@@ -35,12 +35,12 @@ Create subject identifiers.
         study_site='40')
     >>> subject_identifier.identifier
     '000-40990001-6'
-    
+
 
 Maternal and Infant Identifiers
 -------------------------------
 
-See also, ``edc_pregnancy`` model mixins ``DeliveryMixin``, ``BirthMixin``. 
+See also, ``edc_pregnancy`` model mixins ``DeliveryMixin``, ``BirthMixin``.
 
 For example:
 
@@ -53,10 +53,10 @@ For example:
         model='edc_example.enrollment',
         study_site='40',
         last_name='Carter')
-    
+
     >>> maternal_identifier.identifier
     '000-40990001-6'
-    
+
 Add infants
 
 .. code-block:: python
@@ -66,17 +66,17 @@ Add infants
     ['000-40990001-6-25', '000-40990001-6-26']
 
 ``maternal_identifier.infants`` is a list of ``InfantIdentifier`` instances
-    
+
 Reload class:
 
 .. code-block:: python
-    
+
     >>> maternal_identifier = MaternalIdentifier(identifier='000-40990001-6')
     >>> maternal_identifier.identifier
     '000-40990001-6'
     >>> [infant.identifier for infant in maternal_identifier.infants]
     ['000-40990001-6-25', '000-40990001-6-26']
-    
+
 Only allocate an identifier to one infant of twins:
 
 .. code-block:: python
@@ -118,7 +118,7 @@ By default, ``MaternalIdentifier`` and ``InfantIdentifier`` create ``RegisteredS
     # infant
     >>> obj = RegisteredSubject.objects.get(subject_identifier='000-40990001-6-10')
     >>> obj.first_name
-    'Baby1Carter'  ## generates a temp name until Birth form is added with complete information.    
+    'Baby1Carter'  ## generates a temp name until Birth form is added with complete information.
     >>> obj.relative_identifier
     '000-40990001-6'
 
@@ -142,7 +142,7 @@ The numeric identifier uses a check-digit and may have a separator if specified.
 
 	class MyIdentifier(NumericIdentifier):
 		pass
-		
+
 	>>> id = MyIdentifier(None)
 	>>> id
 	MyIdentifier('00000000018')
@@ -171,7 +171,7 @@ The numeric identifier uses a check-digit and may have a separator if specified.
 	>>> id = MyIdentifier('3200-0000-3222-0')
 	>>> id
 	MyIdentifier('3200-0000-3223-8')
-	
+
 
 Alphanumeric Identifiers
 ------------------------
@@ -184,7 +184,7 @@ Alphanumeric Identifiers
 		alpha_pattern = r'^[A-Z]{3}$'
 		numeric_pattern = r'^[0-9]{4}$'
 		seed = ['AAA', '0000']
-		
+
 	>>> id = MyIdentifier(None)
 	>>> id
 	MyIdentifier('AAA00015')
@@ -207,19 +207,19 @@ The identifier increments on the numeric sequence then the alpha:
 
 	>>> id = MyIdentifier('AAA99991)
 	>>> id
-	MyIdentifier('AAB00013')	
+	MyIdentifier('AAB00013')
 
 	>>> next(id)
-	'AAB00021'	
+	'AAB00021'
 	>>> next(id)
-	'AAB00039'	
+	'AAB00039'
 	>>> next(id)
-	'AAB00047'	
+	'AAB00047'
 
 	>>> id = MyIdentifier('AAB99999')
 	>>> id
 	MyIdentifier('AAC00010')
-	...	
+	...
 
 See ``getresults-receive`` for sample usage with ``settings`` and a ``History`` model.
 
@@ -231,7 +231,7 @@ Creates a small identifier that is almost unique, for example, across 25 Edc dev
 .. code-block:: python
 
     from edc_identifier import ShortIdentifier
-    
+
     >>> ShortIdentifier()
     ShortIdentifier('46ZZ2')
 
@@ -240,10 +240,10 @@ Add a static prefix -- ``prefix(2) + identifier(5)``:
 .. code-block:: python
 
 	from edc_identifier import ShortIdentifier
-	
+
 	class MyIdentifier(ShortIdentifier):
     	prefix_pattern = r'^[0-9]{2}$'
- 	
+
     >>> options = {'prefix': 22}
     >>> id = MyIdentifier(options=options)
 	>>> id
@@ -256,7 +256,7 @@ Add a checkdigit -- ``prefix(2) + identifier(5) + checkdigit(1)``:
 .. code-block:: python
 
 	from edc_identifier import ShortIdentifier
-	
+
 	class MyIdentifier(ShortIdentifier):
     	prefix_pattern = r'^[0-9]{2}$'
     	checkdigit_pattern = r'^[0-9]{1}$'
@@ -273,9 +273,9 @@ We use this in edc-quota to get a confirmation code:
 .. code-block:: python
 
 	from edc_identifier import ShortIdentifier
-	
+
 	class ConfirmationCode(ShortIdentifier):
-	
+
 	    identifier_type = 'confirmation'
 	    prefix_pattern = ''
 
@@ -284,15 +284,15 @@ We use this in edc-quota to get a confirmation code:
 	CAT33
 	>>> next(code)
 	3FU7D
-	
+
 Add more to the prefix, such as device code and community code.
 
 .. code-block:: python
 
-	from edc_identifier.short_identifier import ShortIdentifier	
-	
+	from edc_identifier.short_identifier import ShortIdentifier
+
 	class RequisitionIdentifier(ShortIdentifier):
-	    
+
 		identifier_type = 'requisition'
 		prefix_pattern = r'^[0-9]{4}$'
 		template = '{device_id}{community_id}{random_string}'
@@ -318,10 +318,10 @@ Add more to the prefix, such as device code and community code.
 	from my_app.models import Requisition
 
 	class RequisitionIdentifier(ShortIdentifier):
-	
+
 	    identifier_type = 'requisition'
 	    requisition_model = Requisition
-	
+
 	    def is_duplicate(self, identifier):
 	        try:
 	            self.requisition_model.get(requisition_identifier=identifier)
@@ -333,7 +333,7 @@ Add more to the prefix, such as device code and community code.
 		def update_history(self):
 			pass
 
-			
+
 Batch Identifier
 ----------------
 
@@ -342,7 +342,7 @@ To have an identifier prefixed by the current date stamp:
 
 .. code-block:: python
 
-	from edc_identifier.batch_identifier import BatchIdentifier	
+	from edc_identifier.batch_identifier import BatchIdentifier
 
 	>>> datetime.today().strftime('%Y%m%d)
 	20150817
@@ -355,9 +355,9 @@ To have an identifier prefixed by the current date stamp:
 
 .. |pypi| image:: https://img.shields.io/pypi/v/edc-identifier.svg
     :target: https://pypi.python.org/pypi/edc-identifier
-    
-.. |travis| image:: https://travis-ci.com/clinicedc/edc-identifier.svg?branch=develop
-    :target: https://travis-ci.com/clinicedc/edc-identifier
-    
+
+.. |actions| image:: https://github.com/clinicedc/edc-identifier/workflows/build/badge.svg?branch=develop
+  :target: https://github.com/clinicedc/edc-identifier/actions?query=workflow:build
+
 .. |coverage| image:: https://coveralls.io/repos/github/clinicedc/edc-identifier/badge.svg?branch=develop
     :target: https://coveralls.io/github/clinicedc/edc-identifier?branch=develop
