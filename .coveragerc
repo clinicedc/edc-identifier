@@ -1,4 +1,4 @@
 [run]
-include = edc_identfier/*
-omit = edc_identfier/tests/*,edc_identfier/migrations/*
+include = edc_identifier/*
+omit = edc_identifier/tests/*,edc_identifier/migrations/*
 branch = 1
