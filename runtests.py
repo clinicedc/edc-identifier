@@ -29,6 +29,7 @@ DEFAULT_SETTINGS = DefaultTestSettings(
         "edc_randomization.apps.AppConfig",
         "edc_sites.apps.AppConfig",
         "edc_protocol.apps.AppConfig",
+        "edc_appointment.apps.AppConfig",
         "edc_registration.apps.AppConfig",
         "edc_identifier.apps.EdcDeviceAppConfig",
         "edc_identifier.apps.AppConfig",
