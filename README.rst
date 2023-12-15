@@ -356,8 +356,8 @@ To have an identifier prefixed by the current date stamp:
 .. |pypi| image:: https://img.shields.io/pypi/v/edc-identifier.svg
     :target: https://pypi.python.org/pypi/edc-identifier
 
-.. |actions| image:: https://github.com/clinicedc/edc-identifier/workflows/build/badge.svg?branch=develop
-  :target: https://github.com/clinicedc/edc-identifier/actions?query=workflow:build
+.. |actions| image:: https://github.com/clinicedc/edc-identifier/actions/workflows/build.yml/badge.svg
+  :target: https://github.com/clinicedc/edc-identifier/actions/workflows/build.yml
 
 .. |coverage| image:: https://coveralls.io/repos/github/clinicedc/edc-identifier/badge.svg?branch=develop
     :target: https://coveralls.io/github/clinicedc/edc-identifier?branch=develop
